@@ -1,6 +1,6 @@
 # mech-typo-detect
 
-## literature (nothing on pecifically _this_ found yet)
+## literature so far
 
 best:
 - https://arxiv.org/abs/2404.09754
