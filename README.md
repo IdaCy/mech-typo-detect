@@ -55,6 +55,6 @@ The paper itself  explains all relevant experiments in detail— from building a
 
 ---
 
-## Contact & License
+## Contributions
 
 Just open an issue or pull request on GitHub if you find any problems or have ideas to extend the project!
