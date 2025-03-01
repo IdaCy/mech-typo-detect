@@ -57,4 +57,4 @@ The paper itself  explains all relevant experiments in detail— from building a
 
 ## Contact & License
 
-This work is part of a research project at **Imperial College London**. Please open an issue or pull request on GitHub if you find any problems or have ideas to extend the codebase. The repository is made available under an MIT License unless otherwise noted.
+Just open an issue or pull request on GitHub if you find any problems or have ideas to extend the project!
