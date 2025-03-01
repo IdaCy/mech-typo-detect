@@ -55,15 +55,6 @@ The paper itself  explains all relevant experiments in detail— from building a
 
 ---
 
-## Paper Abstract
-
-> *“Slip Happens: How Large Language Models Deal With Misspellings”*  
-> This study analyzes the internal representations of a Mistral 7B model, showing that a near–rank‐1 subspace tracks typographical errors from early to mid layers. One neuron (#2070) drives a consistent activation shift, and ablating it or removing the associated dimension slightly reduces model performance and stability, suggesting a low‐dimensional mechanism for handling user spelling slips.
-
-See the full text in this repo (or in the [Colab Notebook](https://colab.research.google.com/drive/1AzfSVcl8XVs6IPQD5RVKr43oYUZ9p3qN?usp=sharing)) for details, methodology, and references.
-
----
-
 ## Contact & License
 
 This work is part of a research project at **Imperial College London**. Please open an issue or pull request on GitHub if you find any problems or have ideas to extend the codebase. The repository is made available under an MIT License unless otherwise noted.
