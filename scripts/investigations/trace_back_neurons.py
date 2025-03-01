@@ -6,15 +6,11 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.decomposition import PCA
 
-###########################
-# CONFIGURATION
-###########################
 DIFFERENCES_DIR = "analyses_results/differences"
-LAYER_NAME = "layer_2"
+LAYER_NAME = "layer_0"
 MAX_FILES = 5000
 SUBSAMPLE = 10000
 N_COMPONENTS = 5
-###########################
 
 
 def run_pca_for_layer(layer_name):
@@ -41,7 +37,7 @@ def run_pca_for_layer(layer_name):
             continue
 
         # 3) Extract the tensor and convert from bfloat16 to float32
-        layer_diff = hidden_dict[layer_name].to(torch.float32)
+        layer_diff = hidden_dict[layer_name].to(torch.float32)  # <--- convert BF16 -> float32
 
         # 4) Move to CPU and convert to NumPy
         layer_diff_np = layer_diff.cpu().numpy()
@@ -75,7 +71,7 @@ def run_pca_for_layer(layer_name):
     pc1_vec = pca.components_[0]  # shape [hidden_dim]
     abs_pc1 = np.abs(pc1_vec)
     top_neuron_indices = np.argsort(-abs_pc1)
-    top_20 = top_neuron_indices[:20]
+    top_20 = top_neuron_indices[:5]
     
     print(f"\n[RESULT] Top 20 neurons (indices) for {layer_name} PC1:")
     for i in top_20:
@@ -86,7 +82,9 @@ def main():
     # Run PCA for your default layer
     run_pca_for_layer(LAYER_NAME)
 
-    # To run more layers in one script
+    # To run multiple layers in one script, just add more calls:
+    run_pca_for_layer("layer_1")
+    run_pca_for_layer("layer_2")
     run_pca_for_layer("layer_3")
 
 if __name__ == "__main__":
