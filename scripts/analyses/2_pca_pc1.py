@@ -58,8 +58,11 @@ def process_file_for_layer_key(file, layer_key):
         print(f"Error processing {file} for {layer_key}: {e}")
     return None
 
+#printout_layers = {"layer_1", "layer_2", "layer_3", "layer_30", "layer_31"}
+
 for layer_key in layer_keys:
-    print(f"\nProcessing {layer_key}...")
+    #if layer_key in printout_layers:
+        #print(f"\nProcessing {layer_key}...")
     all_diff_vectors_list = []
     # Process files in parallel using ThreadPoolExecutor.
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
