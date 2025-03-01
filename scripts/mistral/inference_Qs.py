@@ -8,12 +8,13 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 # Configuration
 # ------------------------------------------------------------------------
 
-CLEAN_FILE = "/workspace/data/preprocessed/cleanQs.csv"
-TYPO_FILE = "/workspace/data/preprocessed/typoQs.csv"
+CLEAN_FILE = "prompts/preprocessed/cleanQs.csv"
+TYPO_FILE = "prompts/preprocessed/typoQs.csv"
 OUTPUT_DIR = "extractions/clean_alltypo"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-MODEL_NAME = "../mech-typo-detect/models/mistral-7b"
+MODEL_NAME = "mistralai/Mistral-7B-v0.1"
+HF_TOKEN = os.environ.get("HF_API_TOKEN")
 BATCH_SIZE = 4
 USE_BFLOAT16 = True  # Use bfloat16 for storage efficiency
 MAX_SEQ_LENGTH = 512
@@ -28,7 +29,11 @@ FINAL_LAYER = 31  # Logits + probabilities from final layer
 # Load Model and Tokenizer
 # ------------------------------------------------------------------------
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+tokenizer = AutoTokenizer.from_pretrained(
+    MODEL_NAME,
+    use_auth_token=HF_TOKEN,
+    trust_remote_code=True
+)
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -38,7 +43,8 @@ model = AutoModelForCausalLM.from_pretrained(
     torch_dtype=torch.bfloat16 if USE_BFLOAT16 else torch.float32,
     low_cpu_mem_usage=True,
     device_map="auto",
-    attn_implementation="eager"
+    attn_implementation="eager",
+    use_auth_token=HF_TOKEN
 )
 model.resize_token_embeddings(len(tokenizer))
 model.eval()
@@ -197,6 +203,8 @@ for start_idx in range(0, len(clean_texts), BATCH_SIZE):
             sample_idx = start_idx + i
             filename = os.path.join(OUTPUT_DIR, f"activations_{sample_idx:05d}.pt")
             torch.save({"clean": activations_clean[i], "typo": activations_typo[i]}, filename)
-        print(f"Saved activations for samples {start_idx} to {end_idx}")
+        
+        if start_idx % 1000 == 0:
+            (f"Saved activations for samples {start_idx} to {end_idx}")
 
 print(f"Inference complete. Results saved in '{OUTPUT_DIR}'.")
