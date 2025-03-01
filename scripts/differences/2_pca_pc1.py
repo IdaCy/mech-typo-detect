@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Directories for input differences and output analyses.
-diff_dir = "analyses_results/differences"  
-output_dir = "analyses_results/PCA_PC1"
+diff_dir = "analyses_results/big_differences"  
+output_dir = "analyses_results/big_PCA_PC1"
 os.makedirs(output_dir, exist_ok=True)
 
 # List all difference files (they are in .pt format).

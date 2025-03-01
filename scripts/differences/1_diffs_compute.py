@@ -4,8 +4,8 @@ import glob
 from tqdm import tqdm
 
 # Directories: Combined activation files and output differences
-combined_dir = "extractions"
-diff_dir = "analyses_results/differences"
+combined_dir = "big_extractions"
+diff_dir = "analyses_results/big_differences"
 os.makedirs(diff_dir, exist_ok=True)
 
 # List all activation files (e.g., activations_*.pt)

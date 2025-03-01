@@ -8,12 +8,12 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 # Configuration
 # ------------------------------------------------------------------------
 
-CLEAN_FILE = "/workspace/data/preprocessed/cleanQs.csv"
-TYPO_FILE = "/workspace/data/preprocessed/typoQs.csv"
-OUTPUT_DIR = "extractions/clean_alltypo"
+CLEAN_FILE = "/workspace/prompts/preprocessed/cleanQs.csv"
+TYPO_FILE = "/workspace/prompts/preprocessed/typo_missing.csv"
+OUTPUT_DIR = "extractions/clean_missing/"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-MODEL_NAME = "../mech-typo-detect/models/mistral-7b"
+MODEL_NAME = "../typo-correct-subspaces/models/mistral-7b"
 BATCH_SIZE = 4
 USE_BFLOAT16 = True  # Use bfloat16 for storage efficiency
 MAX_SEQ_LENGTH = 512
@@ -98,7 +98,7 @@ def capture_activations(text_batch, indices_batch):
     try:
         encodings = tokenizer(
             text_batch,
-            padding=False,
+            padding=True,
             truncation=True,
             max_length=MAX_SEQ_LENGTH,
             return_tensors="pt"
