@@ -1,7 +1,7 @@
-# Slip Happens: How Large Language Models Deal With Misspellings
+# How Large Language Models Deal With Misspellings
 
 **Author**: Ida Caspary (Imperial College London)  
-**Paper**: *"How Large Language Models Deal With Misspellings"*  
+**Part of**: *"Slip Happens: How Large Language Models Deal With Misspellings"*  
 **Colab Notebook**: [Link](https://colab.research.google.com/drive/1AzfSVcl8XVs6IPQD5RVKr43oYUZ9p3qN?usp=sharing)  
 **GitHub**: [https://github.com/IdaCy/mech-typo-detect](https://github.com/IdaCy/mech-typo-detect)
 
