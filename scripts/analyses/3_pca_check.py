@@ -45,27 +45,20 @@ for layer in sorted(pc1_vectors.keys(), key=lambda x: int(x.split('_')[1])):
     print("")
 
 # Plot the explained variance ratio of PC1 across layers.
-layers = sorted(pca_results.keys(), key=lambda x: int(x.split('_')[1]))
+# Plot the explained variance ratio of PC1 across layers.
+layers = sorted(pca_results.keys(), key=lambda x: int(x.split("_")[1]))
 numeric_layers = [int(k.split("_")[1]) for k in layers]
 first_pc_ev = [pca_results[layer][0] for layer in layers]
 
-plt.figure(figsize=(12, 5))
-
-# Left plot: Incorrect spacing (categorical ordering)
-plt.subplot(1, 2, 1)
-plt.plot(layers, first_pc_ev, marker='o', linestyle='-')
+plt.figure(figsize=(10, 5))
+plt.plot(numeric_layers, first_pc_ev, marker='o', linestyle='-')
 plt.xlabel("Layer")
 plt.ylabel("Explained Variance Ratio (PC1)")
-plt.title("Categorical Layer Ordering")
+plt.title("PC1 Explained Variance Ratio for Relevant Layers")
 plt.grid(True)
 
-# Right plot: Correct spacing (numeric ordering)
-plt.subplot(1, 2, 2)
-plt.plot(numeric_layers, first_pc_ev, marker='o', linestyle='-')
-plt.xlabel("Layer (Correctly Spaced)")
-plt.ylabel("Explained Variance Ratio (PC1)")
-plt.title("Numerically Spaced Layer Ordering")
-plt.grid(True)
+# Limit y-axis if desired
+plt.ylim(0.95, 1.0)
 
 plt.tight_layout()
 plt.show()
