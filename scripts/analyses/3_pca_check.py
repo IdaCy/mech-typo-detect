@@ -21,30 +21,17 @@ pca_results = torch.load(results_file, map_location="cpu", weights_only=False)
 pc1_vectors = torch.load(pc1_file, map_location="cpu", weights_only=False)
 
 print("=== PCA Results Summary ===")
-print("Type of PCA results:", type(pca_results))
-print("Layers found:", sorted(pca_results.keys(), key=lambda x: int(x.split('_')[1])))
+print("Type of PCA results:", type(pca_results), end=" ")
+print("Type of PC1 vectors:", type(pc1_vectors))
 print(f"Total layers: {len(pca_results)}\n")
 
 for layer in sorted(pca_results.keys(), key=lambda x: int(x.split('_')[1])):
-    ev = pca_results[layer]
-    print(f"Layer {layer}:")
-    print(f"  Explained variance ratios (top 10): {ev}")
+    ev = pca_results[layer][:3]
+    vec = pc1_vectors[layer][:3]
+    print(f"Layer {layer}: Explained variance ratios (top 3): {ev} | First 3 elements: {vec[:5]}")
     print("")
 
-print("=== PC1 Vectors Summary ===")
-print("Type of PC1 vectors:", type(pc1_vectors))
-print("Layers found:", sorted(pc1_vectors.keys(), key=lambda x: int(x.split('_')[1])))
-print(f"Total layers: {len(pc1_vectors)}\n")
 
-for layer in sorted(pc1_vectors.keys(), key=lambda x: int(x.split('_')[1])):
-    vec = pc1_vectors[layer]
-    print(f"Layer {layer}:")
-    print(f"  PC1 vector shape: {vec.shape}")
-    # Print first 5 elements for a quick look.
-    print(f"  First 5 elements: {vec[:5]}")
-    print("")
-
-# Plot the explained variance ratio of PC1 across layers.
 # Plot the explained variance ratio of PC1 across layers.
 layers = sorted(pca_results.keys(), key=lambda x: int(x.split("_")[1]))
 numeric_layers = [int(k.split("_")[1]) for k in layers]
