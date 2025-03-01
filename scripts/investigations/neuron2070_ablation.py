@@ -3,7 +3,7 @@
 """
 neuron2070_ablation.py
 
-Script that specifically zeros out neuron #2070's activation
+Demonstration script that specifically zeros out neuron #2070's activation
 at a chosen layer (layer_2 by default). Then we compare normal generation
 vs. "only that neuron suppressed" generation, measuring perplexities
 and final text.
@@ -24,14 +24,14 @@ from tqdm import tqdm
 # GLOBAL CONFIG
 # -----------------------
 DATASET_CSV       = "prompts/preprocessed/typoQs.csv"
-SUBSAMPLE_LINES   = 50
+SUBSAMPLE_LINES   = 200
 MODEL_NAME        = "../typo-correct-subspaces/models/mistral-7b"
-LAYER_INDEX       = 2      # Where #2070 lives or you want to ablate
-NEURON_INDEX      = 2070   # which neuron to zero out
+LAYER_INDEX       = 2
+NEURON_INDEX      = 2070
 DEVICE            = "cuda"
 
 OUTPUT_CSV        = "analyses_results/neuron2070_ablation.csv"
-LOG_FILE          = "logs/neuron2070_ablation.log"
+LOG_FILE          = "neuron2070_ablation.log"
 
 MAX_NEW_TOKENS    = 40
 DO_SAMPLE         = True
@@ -67,8 +67,7 @@ def main():
     # We'll define a hook that sets output_[:, :, NEURON_INDEX] = 0
     def neuron_suppression_hook_fn(module, input_, output_):
         # shape: (batch, seq_len, hidden_dim)
-        # We forcibly zero out the NEURON_INDEX dimension
-        # We'll do in-place assignment to output_:
+        # We forcibly zero out the NEURON_INDEX dimension - in-place assignment to output_:
         output_[:,:,NEURON_INDEX] = 0
         return output_
 

@@ -20,7 +20,7 @@ def run_pca_for_layer(layer_name):
     
     all_vectors = []
     
-    print(f"[INFO] Will load up to {len(diff_files)} difference files for {layer_name}...")
+    print(f"Will load up to {len(diff_files)} difference files for {layer_name}...")
 
     for file_name in tqdm(diff_files):
         path = os.path.join(DIFFERENCES_DIR, file_name)
@@ -37,7 +37,7 @@ def run_pca_for_layer(layer_name):
             continue
 
         # 3) Extract the tensor and convert from bfloat16 to float32
-        layer_diff = hidden_dict[layer_name].to(torch.float32)  # <--- convert BF16 -> float32
+        layer_diff = hidden_dict[layer_name].to(torch.float32)
 
         # 4) Move to CPU and convert to NumPy
         layer_diff_np = layer_diff.cpu().numpy()
@@ -50,22 +50,22 @@ def run_pca_for_layer(layer_name):
     
     # Concatenate across all examples
     all_vectors = np.concatenate(all_vectors, axis=0)
-    print(f"[INFO] Combined shape before subsampling for {layer_name}: {all_vectors.shape}")
+    print(f"Combined shape before subsampling for {layer_name}: {all_vectors.shape}")
 
     if SUBSAMPLE < all_vectors.shape[0]:
         idx = np.random.choice(all_vectors.shape[0], size=SUBSAMPLE, replace=False)
         all_vectors = all_vectors[idx]
-        print(f"[INFO] Subsampled to {all_vectors.shape[0]} tokens for {layer_name}.")
+        #print(f"Subsampled to {all_vectors.shape[0]} tokens for {layer_name}.")
 
     # Run PCA
-    print(f"[INFO] Running PCA on {layer_name}...")
+    print(f"Running PCA on {layer_name}...")
     pca = PCA(n_components=N_COMPONENTS)
     pca.fit(all_vectors)
     
     explained_variance = pca.explained_variance_ratio_
-    print(f"[RESULT] {layer_name} explained variance ratio (PC1..PC{N_COMPONENTS}): {explained_variance}")
+    print(f"{layer_name} explained variance ratio (PC1..PC{N_COMPONENTS}): {explained_variance}")
     pc1_var_percent = explained_variance[0] * 100
-    print(f"[RESULT] PC1 explains {pc1_var_percent:.4f}% of the variance for {layer_name}.")
+    print(f"PC1 explains {pc1_var_percent:.4f}% of the variance for {layer_name}.")
 
     # Identify top neurons for PC1
     pc1_vec = pca.components_[0]  # shape [hidden_dim]
@@ -73,7 +73,7 @@ def run_pca_for_layer(layer_name):
     top_neuron_indices = np.argsort(-abs_pc1)
     top_20 = top_neuron_indices[:5]
     
-    print(f"\n[RESULT] Top 20 neurons (indices) for {layer_name} PC1:")
+    print(f"\nTop 20 neurons (indices) for {layer_name} PC1:")
     for i in top_20:
         print(f"  Neuron {i} | contribution = {pc1_vec[i]:.6f}")
 

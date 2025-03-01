@@ -5,15 +5,11 @@ import torch
 from collections import Counter
 from tqdm import tqdm
 
-###########################
-# CONFIGURATION
-###########################
+# SCOPE/SPEED CONFIG
 EXTRACTIONS_DIR = "extractions"
 MAX_FILES = 5000
 THRESHOLD_RATIO = 10.0
 MIN_TYPOS = 50
-###########################
-
 
 def main():
     files = sorted([

@@ -25,9 +25,7 @@ import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 
-# -----------------------
-# CONFIG
-# -----------------------
+# SCOPE/SPEED CONFIG
 MODEL_NAME = "../typo-correct-subspaces/models/mistral-7b"
 PC1_VECTORS_PATH = "analyses_results/PCA_PC1/layer_pc1_vectors.pt"  # from your PCA script
 PC1_LAYER_KEY = "layer_2"  # which layer's PC1 to use
