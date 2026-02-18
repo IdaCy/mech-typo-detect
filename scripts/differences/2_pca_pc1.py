@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Directories for input differences and output analyses.
-diff_dir = "analyses_results/differences"
-output_dir = "analyses_results/PCA_PC1"
+diff_dir = "analyses_results/big_differences"  
+output_dir = "analyses_results/big_PCA_PC1"
 os.makedirs(output_dir, exist_ok=True)
 
 # List all difference files (they are in .pt format).
@@ -58,11 +58,8 @@ def process_file_for_layer_key(file, layer_key):
         print(f"Error processing {file} for {layer_key}: {e}")
     return None
 
-#printout_layers = {"layer_1", "layer_2", "layer_3", "layer_30", "layer_31"}
-
 for layer_key in layer_keys:
-    #if layer_key in printout_layers:
-        #print(f"\nProcessing {layer_key}...")
+    print(f"\nProcessing {layer_key}...")
     all_diff_vectors_list = []
     # Process files in parallel using ThreadPoolExecutor.
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -77,13 +74,13 @@ for layer_key in layer_keys:
     # Concatenate all arrays from this layer.
     all_diff_vectors = np.concatenate(all_diff_vectors_list, axis=0)
     print(f"Collected {all_diff_vectors.shape[0]} vectors for {layer_key}.")
-
+    
     # Subsample if necessary.
     if all_diff_vectors.shape[0] > max_samples:
         indices = np.random.choice(all_diff_vectors.shape[0], size=max_samples, replace=False)
         all_diff_vectors = all_diff_vectors[indices]
         print(f"Subsampled to {max_samples} vectors for {layer_key}.")
-
+    
     # Run PCA on the difference vectors for this layer.
     pca = PCA(n_components=10)
     pca.fit(all_diff_vectors)

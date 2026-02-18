@@ -8,13 +8,12 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 # Configuration
 # ------------------------------------------------------------------------
 
-CLEAN_FILE = "prompts/preprocessed/cleanQs.csv"
-TYPO_FILE = "prompts/preprocessed/typoQs.csv"
-OUTPUT_DIR = "extractions/clean_alltypo"
+CLEAN_FILE = "/workspace/prompts/preprocessed/cleanQs.csv"
+TYPO_FILE = "/workspace/prompts/preprocessed/typo_repeated.csv"
+OUTPUT_DIR = "extractions/clean_repeated/"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-MODEL_NAME = "mistralai/Mistral-7B-v0.1"
-HF_TOKEN = os.environ.get("HF_API_TOKEN")
+MODEL_NAME = "../typo-correct-subspaces/models/mistral-7b"
 BATCH_SIZE = 4
 USE_BFLOAT16 = True  # Use bfloat16 for storage efficiency
 MAX_SEQ_LENGTH = 512
@@ -29,11 +28,7 @@ FINAL_LAYER = 31  # Logits + probabilities from final layer
 # Load Model and Tokenizer
 # ------------------------------------------------------------------------
 
-tokenizer = AutoTokenizer.from_pretrained(
-    MODEL_NAME,
-    use_auth_token=HF_TOKEN,
-    trust_remote_code=True
-)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -43,8 +38,7 @@ model = AutoModelForCausalLM.from_pretrained(
     torch_dtype=torch.bfloat16 if USE_BFLOAT16 else torch.float32,
     low_cpu_mem_usage=True,
     device_map="auto",
-    attn_implementation="eager",
-    use_auth_token=HF_TOKEN
+    attn_implementation="eager"
 )
 model.resize_token_embeddings(len(tokenizer))
 model.eval()
@@ -104,7 +98,7 @@ def capture_activations(text_batch, indices_batch):
     try:
         encodings = tokenizer(
             text_batch,
-            padding=False,
+            padding=True,
             truncation=True,
             max_length=MAX_SEQ_LENGTH,
             return_tensors="pt"
@@ -186,7 +180,7 @@ for start_idx in range(0, len(clean_texts), BATCH_SIZE):
 
     indices_clean_batch, indices_typo_batch = [], []
     tokens_clean_batch, tokens_typo_batch = [], []
-
+    
     for clean_txt, typo_txt in zip(batch_clean, batch_typo):
         rel_clean, tokens_clean, rel_typo, tokens_typo = get_relevant_token_indices_pair(clean_txt, typo_txt, tokenizer)
         indices_clean_batch.append(rel_clean)
@@ -203,8 +197,6 @@ for start_idx in range(0, len(clean_texts), BATCH_SIZE):
             sample_idx = start_idx + i
             filename = os.path.join(OUTPUT_DIR, f"activations_{sample_idx:05d}.pt")
             torch.save({"clean": activations_clean[i], "typo": activations_typo[i]}, filename)
-
-        if start_idx % 1000 == 0:
-            (f"Saved activations for samples {start_idx} to {end_idx}")
+        print(f"Saved activations for samples {start_idx} to {end_idx}")
 
 print(f"Inference complete. Results saved in '{OUTPUT_DIR}'.")
